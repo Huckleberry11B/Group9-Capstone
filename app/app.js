@@ -7,7 +7,8 @@ class ScreenshotOCR extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      extractedText: ''
+      extractedText: '',
+      editedText: '' // added state to hold edited text
     };
   }
 
@@ -25,6 +26,20 @@ class ScreenshotOCR extends React.Component {
     }
   };
 
+  handleFileUpload = async (event) => {
+    try {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const uri = URL.createObjectURL(file);
+      console.log('Image uploaded:', uri);
+      this.performOCR(uri);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Error', 'Failed to upload image');
+    }
+  };
+
   performOCR = async (uri) => {
     try {
       const worker = createWorker();
@@ -33,7 +48,10 @@ class ScreenshotOCR extends React.Component {
       await worker.initialize('eng');
       const { data: { text } } = await worker.recognize(uri);
       console.log('Extracted text:', text);
-      this.setState({ extractedText: text });
+      this.setState({ 
+        extractedText: text,
+        editedText: text // initialize edited text with extracted text
+      });
       await worker.terminate();
     } catch (error) {
       console.error('Error performing OCR:', error);
@@ -41,14 +59,23 @@ class ScreenshotOCR extends React.Component {
     }
   };
 
+  handleTextChange = (event) => {
+    this.setState({ editedText: event.target.value });
+  };
+
   render() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View ref={ref => (this.myRef = ref)}>
-          <Text>This is the content you want to capture</Text>
+          <Text>This is the content you captured</Text>
         </View>
         <Button title="Capture Screenshot" onPress={this.captureScreenshot} />
-        <Text style={{ marginTop: 20, textAlign: 'center' }}>{this.state.extractedText}</Text>
+        <input type="file" accept="image/*" onChange={this.handleFileUpload} />
+        <textarea
+          value={this.state.editedText}
+          onChange={this.handleTextChange}
+          style={{ marginTop: 20, width: '80%', height: 200 }}
+        />
       </View>
     );
   }
