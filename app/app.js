@@ -8,7 +8,7 @@ class ScreenshotOCR extends React.Component {
     super(props);
     this.state = {
       extractedText: '',
-      editedText: '' // added state to hold edited text
+      editedText: '' 
     };
   }
 
@@ -50,7 +50,7 @@ class ScreenshotOCR extends React.Component {
       console.log('Extracted text:', text);
       this.setState({ 
         extractedText: text,
-        editedText: text // initialize edited text with extracted text
+        editedText: text 
       });
       await worker.terminate();
     } catch (error) {

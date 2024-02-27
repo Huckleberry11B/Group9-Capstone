@@ -5,7 +5,7 @@ import email_icon from '../assets/email.png';
 import password_icon from '../assets/password.png';
 
 
-const LoginSignup = ({ setToken }) => {
+const Login = ({ setToken }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -79,4 +79,4 @@ const LoginSignup = ({ setToken }) => {
   );
 };
 
-export default LoginSignup;
+export default Login;
